@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.ph45308.assignment_ph45308.Component.CustomTextField
 import com.ph45308.assignment_ph45308.Model.User
 import com.ph45308.assignment_ph45308.R
 import com.ph45308.assignment_ph45308.ViewModel.RegisterViewModel
@@ -129,7 +130,6 @@ fun RegisterScreen(navController: NavController) {
                 ),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-
             CustomTextField(
                 value = fullname,
                 label = "Full Name",

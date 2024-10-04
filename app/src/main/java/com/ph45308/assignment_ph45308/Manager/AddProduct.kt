@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -43,8 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.ph45308.assignment_ph45308.BottomBarScreens
-import com.ph45308.assignment_ph45308.Home.MyDropdownMenu
+import com.ph45308.assignment_ph45308.Home_n_Product.MyDropdownMenu
 import com.ph45308.assignment_ph45308.Manager.ui.theme.Assignment_PH45308Theme
 import com.ph45308.assignment_ph45308.MyTopBar
 import com.ph45308.assignment_ph45308.R

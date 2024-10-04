@@ -1,17 +1,13 @@
 package com.ph45308.assignment_ph45308
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,7 +18,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,13 +39,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ph45308.assignment_ph45308.Account.Login
 import com.ph45308.assignment_ph45308.Account.LoginScreen
 import com.ph45308.assignment_ph45308.Account.RegisterScreen
-import com.ph45308.assignment_ph45308.Account.Splash
 import com.ph45308.assignment_ph45308.Cart.CartScreen
 import com.ph45308.assignment_ph45308.History.HistoryScreen
-import com.ph45308.assignment_ph45308.Home.HomeScreen
+import com.ph45308.assignment_ph45308.Home_n_Product.HomeScreen
+import com.ph45308.assignment_ph45308.Home_n_Product.ProductDetailScreen
 import com.ph45308.assignment_ph45308.Profile.ProfileScreen
 import com.ph45308.assignment_ph45308.ui.theme.Assignment_PH45308Theme
 
@@ -96,6 +89,7 @@ fun NavigationGraph(navigationController: NavHostController) {
         composable(BottomBarScreens.Profile.screen) { ProfileScreen() }
         composable("RegisterScreen") { RegisterScreen(navigationController) }
         composable("LoginScreen") { LoginScreen(navigationController) }
+        composable("ProductDetailScreen") { ProductDetailScreen(productId = "66f2b2fb241ecbbc239dd506") }
     }
 }
 

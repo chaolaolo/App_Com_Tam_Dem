@@ -26,6 +26,9 @@ interface ApiService {
     @DELETE("products/deleteProduct/{id}")
     suspend fun deleteProduct(@Path("id") id: String): Unit
 
+    @GET("products/getProductDetail/{productId}")
+    suspend fun getProductDetail(@Path("productId") productId: String): Product
+
     @POST("products/addToCart")
     suspend fun addToCart(@Body cart: Cart): Cart
 

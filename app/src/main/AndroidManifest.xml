@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,9 +12,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Assignment_PH45308"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".Payment.Payment"
+            android:exported="false"
+            android:label="@string/title_activity_payment"
+            android:theme="@style/Theme.Assignment_PH45308" />
         <activity
             android:name=".History.History"
             android:exported="false"
@@ -75,7 +80,7 @@
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.Assignment_PH45308" />
         <activity
-            android:name=".Home.Home"
+            android:name=".Home_n_Product.Home"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.Assignment_PH45308" />

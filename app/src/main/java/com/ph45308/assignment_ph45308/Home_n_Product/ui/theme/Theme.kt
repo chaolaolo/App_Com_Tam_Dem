@@ -1,6 +1,5 @@
-package com.ph45308.assignment_ph45308.Home.ui.theme
+package com.ph45308.assignment_ph45308.Home_n_Product.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
