@@ -84,16 +84,7 @@
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.Assignment_PH45308" />
-        <activity
-            android:name=".Account.OTP"
-            android:exported="false"
-            android:label="@string/title_activity_otp"
-            android:theme="@style/Theme.Assignment_PH45308" />
-        <activity
-            android:name=".Account.UpdateInformation"
-            android:exported="false"
-            android:label="@string/title_activity_update_information"
-            android:theme="@style/Theme.Assignment_PH45308" />
+
         <activity
             android:name=".Account.SplashScreen"
             android:exported="true"

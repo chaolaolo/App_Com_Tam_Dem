@@ -22,9 +22,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
+import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -52,6 +62,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ph45308.assignment_ph45308.Account.ui.theme.Assignment_PH45308Theme
+import com.ph45308.assignment_ph45308.Model.Category
 import com.ph45308.assignment_ph45308.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -136,6 +147,155 @@ fun PaymentOption(
         )
     }
 }
+
+///Spinner
+@Composable
+fun ProductCategoryDropdown(
+    onCategorySelected: (Category) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+
+    // Sample product categories
+    val categories = remember {
+        listOf(
+            Category("1", "Điện thoại", "Smartphones và phụ kiện"),
+            Category("2", "Laptop", "Máy tính xách tay"),
+            Category("3", "Tablet", "Máy tính bảng"),
+            Category("4", "aa", "Các loại phụ kiện điện tử"),
+            Category("5", "bb", "Smartwatch")
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        // Title
+        Text(
+            text = "Chọn loại sản phẩm",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        // Dropdown Menu
+        Box {
+            OutlinedCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = true }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = selectedCategory?.name ?: "Chọn danh mục",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Icon(
+                        imageVector = if (expanded)
+                            Icons.Default.KeyboardArrowUp
+                        else
+                            Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Dropdown Arrow"
+                    )
+                }
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+            ) {
+                categories.forEach { category ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = category.name,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        },
+                        onClick = {
+                            selectedCategory = category
+                            expanded = false
+                            onCategorySelected(category)
+                        }
+                    )
+                    if (category != categories.last()) {
+                        Divider()
+                    }
+                }
+            }
+        }
+
+        // Show selected category details
+//        selectedCategory?.let { category ->
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Surface(
+//                modifier = Modifier.fillMaxWidth(),
+//                color = MaterialTheme.colorScheme.surfaceVariant,
+//                shape = MaterialTheme.shapes.medium
+//            ) {
+//                Column(
+//                    modifier = Modifier.padding(16.dp)
+//                ) {
+//                    Text(
+//                        text = "Danh mục đã chọn:",
+//                        style = MaterialTheme.typography.titleSmall
+//                    )
+//                    Spacer(modifier = Modifier.height(8.dp))
+//                    Text(
+//                        text = "ID: ${category.id}",
+//                        style = MaterialTheme.typography.bodyMedium
+//                    )
+//                    Text(
+//                        text = "Tên: ${category.name}",
+//                        style = MaterialTheme.typography.bodyMedium
+//                    )
+//                    if (category.description.isNotEmpty()) {
+//                        Text(
+//                            text = "Mô tả: ${category.description}",
+//                            style = MaterialTheme.typography.bodyMedium
+//                        )
+//                    }
+//                }
+//            }
+//        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @Preview(showSystemUi = true)

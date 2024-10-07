@@ -65,9 +65,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation("androidx.navigation:navigation-compose:2.8.2")
-    implementation ("androidx.compose.material:material:1.7.2")
+    implementation ("androidx.compose.material:material:1.7.3")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.auth0.android:jwtdecode:2.0.1")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
 }

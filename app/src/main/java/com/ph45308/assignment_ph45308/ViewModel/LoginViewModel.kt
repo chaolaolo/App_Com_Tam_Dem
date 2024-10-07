@@ -7,9 +7,11 @@ import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ph45308.assignment_ph45308.ApiService
+import com.ph45308.assignment_ph45308.APIServices.ApiService
+import com.ph45308.assignment_ph45308.APIServices.RetrofitClient
 import com.ph45308.assignment_ph45308.Model.User
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -23,20 +25,14 @@ class LoginViewModel : ViewModel() {
     var errorPass by mutableStateOf<String?>(null)
     var rememberMe by mutableStateOf(false)
 
-    private var BASE_URL = "http://192.168.1.4:3000/"
     private val PREFS_NAME = "user_prefs"
     private val TOKEN_KEY = "token"
     private val EMAIL_KEY = "email"
     private val PASSWORD_KEY = "password"
     private val REMEMBER_ME_KEY = "remember_me"
 
-    private val apiService: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiService::class.java)
-    }
+    private val apiService = RetrofitClient.apiService
+
 
     fun validateInputs(): Boolean {
         var err = true
@@ -112,11 +108,13 @@ class LoginViewModel : ViewModel() {
             password = sharedPreferences.getString(PASSWORD_KEY, "") ?: ""
             rememberMe = true
         }
+
     }
 
     fun checkLogin(context: Context): Boolean {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        Log.d("TAG", "login token: "+sharedPreferences.getString(TOKEN_KEY, null))
         return sharedPreferences.getString(TOKEN_KEY, null) != null
     }
 
@@ -125,8 +123,12 @@ class LoginViewModel : ViewModel() {
             context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             remove(TOKEN_KEY)
+            remove(EMAIL_KEY)
+            remove(PASSWORD_KEY)
+            putBoolean(REMEMBER_ME_KEY, false)
             apply()
         }
+        Log.d("TAG", sharedPreferences.toString())
     }
 
 

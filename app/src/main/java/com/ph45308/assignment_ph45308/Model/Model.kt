@@ -11,6 +11,12 @@ data class Product(
     var category: String,
 )
 
+data class Category(
+    val id: String,
+    val name: String,
+    val description: String = ""
+)
+
 data class User(
     var name: String,
     var userName: String,
@@ -31,8 +37,20 @@ data class LoginResponse(
     val message: String?
 )
 
+//data class Cart(
+//    val _id: String,
+//    val user: User,
+//    val items: List<CartItem>,
+//)
+
 data class Cart(
-    var _id: String,
+    val productId:String,
+    val quantity:Int,
+)
+
+data class CartItem(
+    val product: Product,
+    val quantity:Int=1,
 )
 
 

@@ -19,9 +19,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -55,9 +58,12 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.ph45308.assignment_ph45308.Home_n_Product.ui.theme.Assignment_PH45308Theme
 import com.ph45308.assignment_ph45308.R
@@ -72,7 +78,7 @@ class ProductDetail : ComponentActivity() {
         setContent {
             Assignment_PH45308Theme {
 
-                ProductDetailScreen(productId = "66f2b2fb241ecbbc239dd506")
+                ProductDetailScreen(productId = "66f2b2fb241ecbbc239dd506", navigationController = rememberNavController())
 //                PreviewHome()
 
             }
@@ -86,12 +92,33 @@ class ProductDetail : ComponentActivity() {
 fun ProductDetailScreen(
     productId: String,
     viewModel: ProductViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    navigationController: NavHostController,
 ) {
     LaunchedEffect(Unit) {
         viewModel.fetchProductDetail(productId)
     }
     val product = viewModel.selectedProduct.value
     var quantity by remember { mutableStateOf(product?.quantity ?: 1) }
+
+    // Xử lý trường hợp không có sản phẩm
+    if (product == null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+            ){
+            Column (
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                CircularProgressIndicator()
+                Text(text = "Loading product details...", modifier = Modifier, textAlign = TextAlign.Center)
+            }
+        }
+        return
+    }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -100,7 +127,9 @@ fun ProductDetailScreen(
             ),
             navigationIcon = {
                 IconButton(
-                    onClick = { /*TODO*/ }, modifier = Modifier
+                    onClick = {
+                        navigationController.navigateUp()
+                    }, modifier = Modifier
                         .shadow(elevation = 4.dp, shape = CircleShape)
                         .background(Color.White, shape = CircleShape)
                 ) {
@@ -141,7 +170,10 @@ fun ProductDetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .padding(20.dp, 0.dp), horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(20.dp, 0.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+
             ) {
                 AsyncImage(
                     model = product?.image_url ?: "",
@@ -283,5 +315,5 @@ fun ProductDetailScreen(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewProductDetail() {
-    ProductDetailScreen(productId = "66f2b2fb241ecbbc239dd506")
+    ProductDetailScreen(productId = "66f2b2fb241ecbbc239dd506", navigationController = rememberNavController())
 }

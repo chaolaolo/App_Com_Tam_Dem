@@ -35,10 +35,12 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.ph45308.assignment_ph45308.Account.LoginScreen
 import com.ph45308.assignment_ph45308.Account.RegisterScreen
 import com.ph45308.assignment_ph45308.Cart.CartScreen
@@ -66,22 +68,33 @@ class MainActivity : ComponentActivity() {
 fun MainApp() {
     val navigationController = rememberNavController()
     val navBackStackEntry by navigationController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+    val currentDestination = navBackStackEntry?.destination?.route
+
+    val showBottomBar = when (currentDestination) {
+        "ProductDetailScreen/{productId}" -> false
+        "LoginScreen" -> false
+        "RegisterScreen" -> false
+        null -> false
+        else -> true
+    }
 
     Scaffold(
         bottomBar = {
-            MyBottomAppBar(navigationController = navigationController)
+            if (showBottomBar) {
+                MyBottomAppBar(navigationController = navigationController)
+            }
         }
-    ) {
-        NavigationGraph(navigationController)
+    ) { paddingValues ->
+        NavigationGraph(navigationController, Modifier.padding(paddingValues))
     }
 }
 
 @Composable
-fun NavigationGraph(navigationController: NavHostController) {
+fun NavigationGraph(navigationController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
         navController = navigationController,
         startDestination = BottomBarScreens.Home.screen,
+        modifier = modifier
     ) {
         composable(BottomBarScreens.Home.screen) { HomeScreen(navigationController) }
         composable(BottomBarScreens.History.screen) { HistoryScreen() }
@@ -89,7 +102,16 @@ fun NavigationGraph(navigationController: NavHostController) {
         composable(BottomBarScreens.Profile.screen) { ProfileScreen() }
         composable("RegisterScreen") { RegisterScreen(navigationController) }
         composable("LoginScreen") { LoginScreen(navigationController) }
-        composable("ProductDetailScreen") { ProductDetailScreen(productId = "66f2b2fb241ecbbc239dd506") }
+        composable(
+            "ProductDetailScreen/{productId}",
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry . arguments ?. getString ("productId") ?: ""
+            ProductDetailScreen(
+            productId = productId ,
+            navigationController = navigationController
+            )
+        }
     }
 }
 

@@ -50,9 +50,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ph45308.assignment_ph45308.Account.Login
 import com.ph45308.assignment_ph45308.MyTopBar
 import com.ph45308.assignment_ph45308.Profile.ui.theme.Assignment_PH45308Theme
 import com.ph45308.assignment_ph45308.R
+import com.ph45308.assignment_ph45308.ViewModel.LoginViewModel
+import com.ph45308.assignment_ph45308.ViewModel.ProductViewModel
 
 class Profile : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +92,7 @@ fun ProfileScreen() {
 
 
 @Composable
-fun ProfileScreenUI() {
+fun ProfileScreenUI(viewModel: LoginViewModel= androidx.lifecycle.viewmodel.compose.viewModel()) {
     var phoneNumber by remember { mutableStateOf(TextFieldValue("0342128462")) }
     var ward by remember { mutableStateOf(TextFieldValue("Trung Mỹ Tây")) }
     var street by remember { mutableStateOf(TextFieldValue("Đường Tô Ký")) }
@@ -121,7 +124,11 @@ fun ProfileScreenUI() {
                     .size(100.dp)
                     .clip(CircleShape)
             )
-            TextButton(onClick = { /* Signout action */ }) {
+            TextButton(onClick = {
+                viewModel.logout(context)
+                val intent = Intent(context, Login::class.java)
+                context.startActivity(intent)
+            }) {
                 Text(text = "Signout", color = Color.Black)
             }
         }

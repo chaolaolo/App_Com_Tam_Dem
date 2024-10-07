@@ -1,12 +1,16 @@
 package com.ph45308.assignment_ph45308.Home_n_Product
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -23,9 +27,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
@@ -33,7 +40,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -61,6 +70,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.ph45308.assignment_ph45308.Component.ProductCategoryDropdown
 import com.ph45308.assignment_ph45308.Home_n_Product.ui.theme.Assignment_PH45308Theme
 import com.ph45308.assignment_ph45308.Model.Product
 import com.ph45308.assignment_ph45308.MyTopBar
@@ -87,8 +97,13 @@ class Home : ComponentActivity() {
 @Composable
 fun HomeScreen(navController: NavController, viewModel: ProductViewModel = viewModel()) {
     val scrollState = rememberScrollState()
-    val productList by viewModel.productList
+    val filteredProductList by viewModel.filteredProductList
+    var searchQuery by remember { mutableStateOf("") }
 
+    val context = LocalContext.current
+//    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+//    val token = sharedPreferences.getString("token", "") ?: ""
+    val token = viewModel.getTokenFromSharedPreferences(context) ?: ""
     Scaffold(
         topBar = {
             MyTopBar(
@@ -144,19 +159,27 @@ fun HomeScreen(navController: NavController, viewModel: ProductViewModel = viewM
                             Tab("Khác", R.drawable.img_tab)
                         )
                     }
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { query ->
+                            searchQuery = query
+                            viewModel.searchProducts(query)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text("Search Products") },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
+                    )
                 }
                 item {
-                    MyDropdownMenu()
-
-                }
-                items(productList) { product ->
-                    ProductItem(product)
-                }
-                item {
-                    Button(onClick = { navController.navigate("ProductDetailScreen") }) {
-
+                    ProductCategoryDropdown { selectedCategory ->
+                        // Handle category selection
+                        viewModel.filterProductsByCategory(selectedCategory.name)
+                        println("Selected category: ${selectedCategory.name}")
                     }
-                    ProductItem(Product("a","a","a",100.0,"a",1,"a"))
+                }
+
+                items(viewModel.filteredProductList.value) { product ->
+                    ProductItem(product, navController, token = token)
                 }
 
             }
@@ -172,7 +195,7 @@ fun Banner() {
         contentDescription = "home banner",
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .height(180.dp)
     )
 }
 
@@ -204,6 +227,108 @@ fun Tab(title: String, image: Int) {
 
     }
 }
+
+@Composable
+fun ProductItem(
+    product: Product,
+    navController: NavController,
+    viewModel: ProductViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    token: String,
+) {
+
+    val context = LocalContext.current
+
+
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                navController.navigate("ProductDetailScreen/${product._id}")
+            }
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Spacer(modifier = Modifier.width(8.dp))
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(product.image_url)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Product image",
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop,
+
+                )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = product.name,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Text(
+                    text = product.price.toString(),
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            }
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically,
+//            ) {
+//                IconButton(onClick = { /*TODO*/ }) {
+//                    Image(painter = painterResource(id = R.drawable.icon_minus), contentDescription = "minus quantity")
+//                }
+//                Text(
+//                    text = product.quantity.toString(),
+//                    fontSize = 14.sp,
+//                    color = Color.Black
+//                )
+//                IconButton(onClick = { /*TODO*/ }) {
+//                    Image(imageVector = Icons.Filled.Add, contentDescription = "add more quantity")
+//                }
+//            }
+
+            IconButton(
+                onClick = {
+                    if (token.isNotEmpty()) {
+                        if (product._id != null) {
+                            viewModel.addToCart(context, token, product._id, product.quantity ?: 1)
+                            Log.d("TAG", "ProductItem: " + product._id)
+                        }else {
+                            Log.d("TAG", "Product ID is null")
+                        }
+                    } else {
+                        println("Token is missing. Please log in first.")
+                        Log.d("TAG", "ProductItem: Token is missing. Please log in first.")
+                    }
+//                    viewModel.addToCart(context, token, productId = product._id, product.quantity ?: 1)
+                },
+            ) {
+                Box(
+                    Modifier
+                        .border(border = BorderStroke(1.dp, Color.LightGray), CircleShape)
+                        .padding(10.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_add_shopping_cart),
+                        contentDescription = "icon_add_shopping_cart",
+                        tint = Color(0xFFFF6200)
+                    )
+                }
+            }
+
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -260,66 +385,6 @@ fun MyDropdownMenu() {
     }
 }
 
-
-@Composable
-fun ProductItem(product: Product) {
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { /* Handle product click */ }
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Spacer(modifier = Modifier.width(8.dp))
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(product.image_url)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "Product image",
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop
-
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = product.name,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-                Text(
-                    text = product.price.toString(),
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Image(painter = painterResource(id = R.drawable.icon_minus), contentDescription = "minus quantity")
-                }
-                Text(
-                    text = product.quantity.toString(),
-                    fontSize = 14.sp,
-                    color = Color.Black
-                )
-                IconButton(onClick = { /*TODO*/ }) {
-                    Image(imageVector = Icons.Filled.Add, contentDescription = "add more quantity")
-                }
-            }
-        }
-    }
-}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview(showSystemUi = true)

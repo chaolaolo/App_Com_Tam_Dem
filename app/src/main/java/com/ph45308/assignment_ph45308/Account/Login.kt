@@ -83,6 +83,8 @@ fun LoginScreen(
     viewModel: LoginViewModel = viewModel(),
 ) {
     val context = LocalContext.current
+    viewModel.loadLoginInfo(context)
+
     if (viewModel.checkLogin(context)) {
         val intent = Intent(context, MainActivity::class.java)
         context.startActivity(intent)
@@ -150,14 +152,14 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = viewModel.rememberMe, onCheckedChange = { viewModel.rememberMe = it })
-                    Text(
-                        text = "Ghi nhớ mật khẩu",
-                        style = TextStyle(fontSize = 16.sp, color = Color.Black),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
+//                Row(verticalAlignment = Alignment.CenterVertically) {
+//                    Checkbox(checked = viewModel.rememberMe, onCheckedChange = { viewModel.rememberMe = it })
+//                    Text(
+//                        text = "Ghi nhớ mật khẩu",
+//                        style = TextStyle(fontSize = 16.sp, color = Color.Black),
+//                        modifier = Modifier.padding(start = 8.dp)
+//                    )
+//                }
                 Text(
                     text = stringResource(id = R.string.forgotpass_text),
                     style = TextStyle(
