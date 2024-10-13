@@ -1,5 +1,6 @@
 package com.ph45308.assignment_ph45308.Profile
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,6 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,6 +28,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -53,6 +58,19 @@ import androidx.compose.ui.unit.sp
 import com.ph45308.assignment_ph45308.MainActivity
 import com.ph45308.assignment_ph45308.Profile.ui.theme.Assignment_PH45308Theme
 import com.ph45308.assignment_ph45308.R
+import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.layout.ContentScale
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.ph45308.assignment_ph45308.BottomBarScreens
+import com.ph45308.assignment_ph45308.ViewModel.UserViewModel
 
 class EditProfile : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,85 +78,103 @@ class EditProfile : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Assignment_PH45308Theme {
-
                     PreviewEditProfile()
-
             }
         }
     }
 }
 
 
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun EditProfileScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(Color(0xFFFFFFFF)), // white background color
-//        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
-        ) {
-            EditProfileScreenUI()
-        }
-    }
-}
+fun EditProfileScreen(
+    navController: NavController,
+    userViewModel: UserViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+) {
 
-
-@Composable
-fun EditProfileScreenUI() {
-    var name by remember { mutableStateOf(TextFieldValue("Chao lao Lo")) }
-    var phoneNumber by remember { mutableStateOf(TextFieldValue("0342128462")) }
-    var ward by remember { mutableStateOf(TextFieldValue("Trung Mỹ Tây")) }
-    var street by remember { mutableStateOf(TextFieldValue("Đường Tô Ký")) }
-    var houseNumber by remember { mutableStateOf(TextFieldValue("413")) }
     val context = LocalContext.current
+    val userInfo by userViewModel.userInfoState.collectAsState()
+
+    var name by remember { mutableStateOf("") }
+    var dateOfBirth by remember { mutableStateOf("") }
+    var gender by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        userViewModel.getUserInfo(context)
+        name = userInfo?.name ?: ""
+        dateOfBirth = userInfo?.dateOfBirth ?: ""
+        gender = userInfo?.gender ?: ""
+    }
+
+    Scaffold { paddingValues ->
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFFFFF))
-            .padding(16.dp)
+            .padding(paddingValues)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-
+        verticalArrangement = Arrangement.Center
         ) {
-        Image(
-            painter = painterResource(id = R.drawable.logo), // Replace with your image resource
-            contentDescription = "Avatar",
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
+
+        Box(
+            contentAlignment = Alignment.BottomEnd,
+            modifier = Modifier.size(100.dp).clickable {  }
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(userInfo?.avatar ?: R.drawable.img_empty)
+                    .crossfade(true)
+                    .build(), contentDescription = "Avatar",
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .border(width = 1.dp, color = Color.Blue, shape = CircleShape)
+                    .clickable { navController.navigate("EditAvatarScreen") },
+                contentScale = ContentScale.Crop
+            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_camera),
+                contentDescription = "Edit avatar",
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.BottomEnd)
+                    .offset((-4).dp, (-4).dp)
+                    .clip(shape = CircleShape)
+            )
+        }
+
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text(text = "Họ và Tên") },
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        OutlinedTextField(
+            value = dateOfBirth,
+            onValueChange = { dateOfBirth = it },
+            label = { Text(text = "Ngày sinh") }
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        OutlinedTextField(
+            value = gender,
+            onValueChange = { gender = it },
+            label = { Text(text = "Giới tính") }
         )
 
-        EditTextField(label = "Họ và tên", value = name) {
-            name = it
-        }
-        EditTextField(label = "Số điện thoại", value = phoneNumber) {
-            phoneNumber = it
-        }
-        EditTextField(label = "Phường", value = ward) {
-            ward = it
-        }
-        EditTextField(label = "Đường", value = street) {
-            street = it
-        }
-        EditTextField(label = "Số nhà", value = houseNumber) {
-            houseNumber = it
-        }
 
         Spacer(modifier = Modifier.height(50.dp))
         Button(
             onClick = {
-//                    navController.navigate(BottomBarScreens.Home.screen)
-                var intent = Intent(context, MainActivity::class.java)
-                context.startActivity(intent)
+                userViewModel.UpdateUser(
+                    context = context,
+                    name = name,
+                    dateOfBirth = dateOfBirth,
+                    gender = gender
+                )
+                navController.navigateUp()
+//                var intent = Intent(context, MainActivity::class.java)
+//                context.startActivity(intent)
             },
             modifier = Modifier
                 .width(200.dp)
@@ -157,6 +193,7 @@ fun EditProfileScreenUI() {
         }
 
 
+    }
     }
 }
 
@@ -197,6 +234,6 @@ fun EditTextField(label: String, value: TextFieldValue, onValueChange: (TextFiel
 @Composable
 fun PreviewEditProfile() {
     Assignment_PH45308Theme {
-        EditProfileScreen()
+        EditProfileScreen(rememberNavController())
     }
 }

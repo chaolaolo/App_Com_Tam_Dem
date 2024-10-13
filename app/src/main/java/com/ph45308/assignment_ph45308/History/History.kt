@@ -15,24 +15,41 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.ph45308.assignment_ph45308.History.ui.theme.Assignment_PH45308Theme
+import com.ph45308.assignment_ph45308.Model.Order
 import com.ph45308.assignment_ph45308.MyTopBar
+import com.ph45308.assignment_ph45308.Payment.PayItem
+import com.ph45308.assignment_ph45308.R
+import com.ph45308.assignment_ph45308.ViewModel.ProductViewModel
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 data class Order(
@@ -59,30 +76,17 @@ class History : ComponentActivity() {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HistoryScreen() {
-    val orders = listOf(
-        Order("Đơn hàng đã chấp nhận", "10/03/2023", "9:20", "3 món", "98k"),
-        Order("Đơn hàng đã bị huỷ", "10/03/2023", "9:20", "3 món", "98k"),
-        Order("Đơn hàng đã được giao", "10/03/2023", "9:20", "3 món", "98k"),
-    )
+fun HistoryScreen(viewModel: ProductViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+    var context = LocalContext.current
+    val orders = viewModel.orderList.value
+
+    LaunchedEffect(Unit) {
+        viewModel.getOrders(context)
+    }
     Scaffold(
         topBar = {
             MyTopBar(
-                title = "Giỏ Hàng",
-//                navigationIcon = {
-//                    IconButton(onClick = { /* Handle navigation */ },
-//                        modifier = Modifier.size(100.dp)) {
-//                        Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Back")
-//                    }
-//                },
-//                actions = {
-//                    IconButton(onClick = { /* Handle action 1 */ }) {
-//                        Icon(Icons.Default.Search, contentDescription = "Search")
-//                    }
-//                    IconButton(onClick = { /* Handle action 2 */ }) {
-//                        Icon(Icons.Default.Settings, contentDescription = "Settings")
-//                    }
-//                }
+                title = "Lịch sử",
             )
         }
     ) {paddingValues ->
@@ -107,54 +111,62 @@ fun HistoryScreen() {
 
 @Composable
 fun OrderItem(order: Order) {
+
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
+    val date = inputFormat.parse(order.createdAt)
+    val formattedDate = date?.let { outputFormat.format(it) } ?: "Invalid date"
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(Color(0xA8FBE9E7))
+    ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFEAEBEA), RoundedCornerShape(16.dp))
-            .padding(16.dp),
+            .padding(8.dp, 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            // Status (with color conditional styling)
             Text(
                 text = order.status,
-                color = Color.Red,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                color = when (order.status) {
+                    "Pending" -> Color(0xFFFF9800)
+                    "Shipped" -> Color(0xFF2196F3)
+                    "Delivered" -> Color(0xFF4CAF50)
+                    else -> Color.Black
+                }
+//                if (order.status == "Pending") Color(0xFF4CAF50) else Color.Red,
+                , fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
             )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Date and Time
             Text(
-                text = "${order.date}  ${order.time}",
+//                text = "20-10-2022  10:20",
+                text = formattedDate,
                 color = Color.Black,
                 fontSize = 14.sp
             )
         }
-
         Spacer(modifier = Modifier.width(8.dp))
-
-        // Items count and price
         Column(
-            horizontalAlignment = Alignment.End
+            modifier = Modifier.padding(4.dp)
         ) {
             Text(
-                text = order.items,
+                text = "Số lượng: x${order.items.size}",
                 color = Color.Black,
                 fontSize = 14.sp
             )
-            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = order.price,
+                text = "₫${order.totalAmount}",
                 color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontSize = 14.sp
             )
         }
+    }
     }
 }
 
@@ -163,7 +175,6 @@ fun OrderItem(order: Order) {
 @Composable
 fun PreviewHistory() {
     Assignment_PH45308Theme {
-
         HistoryScreen()
     }
 }

@@ -145,20 +145,20 @@ fun HomeScreen(navController: NavController, viewModel: ProductViewModel = viewM
                 }
 
                 item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .horizontalScroll(scrollState)
-                            .padding(22.dp, 0.dp),
-                        horizontalArrangement = Arrangement.spacedBy(34.dp)
-                    ) {
-                        listOf(
-                            Tab("Món ăn", R.drawable.img_tab),
-                            Tab("Đồ ăn thêm", R.drawable.img_tab),
-                            Tab("Topping", R.drawable.img_tab),
-                            Tab("Khác", R.drawable.img_tab)
-                        )
-                    }
+//                    Row(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .horizontalScroll(scrollState)
+//                            .padding(22.dp, 0.dp),
+//                        horizontalArrangement = Arrangement.spacedBy(34.dp)
+//                    ) {
+//                        listOf(
+//                            Tab("Món ăn", R.drawable.img_tab),
+//                            Tab("Đồ ăn thêm", R.drawable.img_tab),
+//                            Tab("Topping", R.drawable.img_tab),
+//                            Tab("Khác", R.drawable.img_tab)
+//                        )
+//                    }
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = { query ->

@@ -221,7 +221,7 @@ fun RegisterScreen(navController: NavController) {
                         rePasswordError = null
                     }
                     if (!err) {
-                        val user = User(fullname, userName, email, password)
+                        val user = User(fullname, userName, email, password,"","","")
                         registerViewModel.registerUser(user, {
                             var intent = Intent(context, Login::class.java)
                             context.startActivity(intent)

@@ -22,37 +22,44 @@ data class User(
     var userName: String,
     var email: String,
     var password: String,
+    var avatar: String,
+    var dateOfBirth: String,
+    var gender: String,
 )
 {
     constructor(email: String, password: String) : this(
         name = "",
         email = email,
         userName = "",
-        password = password
+        password = password,
+        avatar = "",
+        dateOfBirth = "",
+        gender = "",
     )
 }
 
-data class LoginResponse(
-    val token: String?,
-    val message: String?
-)
+data class LoginResponse(val token: String?, val expiresIn: Long?)
 
-//data class Cart(
-//    val _id: String,
-//    val user: User,
-//    val items: List<CartItem>,
-//)
 
 data class Cart(
-    val productId:String,
+    val product: Product,
     val quantity:Int,
 )
 
-data class CartItem(
+data class OrderItem(
     val product: Product,
-    val quantity:Int=1,
+    val quantity: Int
 )
 
+data class Order(
+    val items: List<OrderItem>,
+    val totalAmount: Double,
+    val address: String,
+    val paymentMethod: String,
+    val phoneNumber: String,
+    val status: String,
+    val createdAt: String,
+)
 
 
 

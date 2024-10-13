@@ -14,17 +14,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -33,6 +42,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +52,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,12 +63,19 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.ph45308.assignment_ph45308.Account.Login
+import com.ph45308.assignment_ph45308.Manager.ManageCategory
+import com.ph45308.assignment_ph45308.Manager.ManageProduct
 import com.ph45308.assignment_ph45308.MyTopBar
 import com.ph45308.assignment_ph45308.Profile.ui.theme.Assignment_PH45308Theme
 import com.ph45308.assignment_ph45308.R
 import com.ph45308.assignment_ph45308.ViewModel.LoginViewModel
 import com.ph45308.assignment_ph45308.ViewModel.ProductViewModel
+import com.ph45308.assignment_ph45308.ViewModel.UserViewModel
 
 class Profile : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +91,19 @@ class Profile : ComponentActivity() {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    userViewModel: UserViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+) {
+
+    val context = LocalContext.current
+    val userInfo by userViewModel.userInfoState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        userViewModel.getUserInfo(context)
+    }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -85,9 +117,94 @@ fun ProfileScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                ProfileScreenUI()
+                //Header
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFEFF6F6)), verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        Modifier
+                            .weight(1f)
+                            .padding(10.dp), verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(userInfo?.avatar ?: R.drawable.img_empty)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "",
+                            Modifier
+                                .size(80.dp)
+                                .clip(shape = CircleShape),
+                            contentScale = ContentScale.Crop,
+                            )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column {
+                            userInfo?.let { user ->
+                                Text(
+                                    text = user.name ?: "Chao Lao Lo", fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = user.email ?: "chaolaolo@gmail.com", color = Color.Gray
+                                )
+                            }
+                        }
+                    }
+                    TextButton(onClick = {
+                        viewModel.logout(context)
+                        val intent = Intent(context, Login::class.java)
+                        context.startActivity(intent)
+                    }) {
+                        Text(text = "Sign Out", color = Color(0xFF3A84DA))
+                    }
+                }
+
+                //Body
+                LazyColumn {
+                    item {
+                        ManageItem(title = "Sửa thông tin cá nhân", icon = Icons.Default.Edit) {
+                            navController.navigate("EditProfileScreen")
+//                            val intent = Intent(context, EditProfile::class.java)
+//                            context.startActivity(intent)
+                        }
+                    }
+                    item {
+                        ManageItem(title = "Quản lý món ăn") {
+                            val intent = Intent(context, ManageProduct::class.java)
+                            context.startActivity(intent)
+                        }
+                    }
+                    item {
+                        ManageItem(title = "Quản lý loại món ăn") {
+                            val intent = Intent(context, ManageCategory::class.java)
+                            context.startActivity(intent)
+                        }
+                    }
+                }
             }
         }
+}
+
+
+@Composable
+fun ManageItem(title: String, icon: ImageVector? = null, onclick: () -> Unit) {
+    Card(
+        onClick = onclick,
+        Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .padding(10.dp),
+    ) {
+        Row(
+            Modifier
+                .fillMaxSize()
+                .padding(10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = title, fontWeight = FontWeight.W500)
+            icon?.let { Image(imageVector = it, contentDescription = null, Modifier.padding(10.dp, 0.dp)) }
+        }
+    }
 }
 
 
@@ -196,6 +313,6 @@ fun ProfileTextField(label: String, value: TextFieldValue, onValueChange: (TextF
 @Composable
 fun PreviewProfile() {
     Assignment_PH45308Theme {
-        ProfileScreen()
+        ProfileScreen(rememberNavController())
     }
 }
