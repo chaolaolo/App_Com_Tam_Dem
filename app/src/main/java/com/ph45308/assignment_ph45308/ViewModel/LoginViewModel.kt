@@ -2,6 +2,7 @@ package com.ph45308.assignment_ph45308.ViewModel
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -14,6 +15,7 @@ import com.ph45308.assignment_ph45308.APIServices.ApiService
 import com.ph45308.assignment_ph45308.APIServices.RetrofitClient
 import com.ph45308.assignment_ph45308.Model.User
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -70,7 +72,7 @@ class LoginViewModel : ViewModel() {
                     )
                 )
                 if (response.token != null) {
-                    saveLoginInfo(context, response.token)
+                    saveLoginInfo(context, response.token,response.expiresIn)
                     errorEmail = null
                     errorPass = null
                     Log.d("TAG", "login token: ${response.token}")
@@ -111,11 +113,21 @@ class LoginViewModel : ViewModel() {
 
     }
 
+    fun isTokenExpired(token: String): Boolean {
+        val payload = token.split(".")[1] // Get the payload part of the JWT
+        val decodedBytes = Base64.decode(payload, Base64.URL_SAFE)
+        val decodedString = String(decodedBytes)
+        val jsonObject = JSONObject(decodedString)
+        val exp = jsonObject.getLong("exp") // Get the expiration time
+        return exp < System.currentTimeMillis() / 1000 // Check if expired
+    }
+
     fun checkLogin(context: Context): Boolean {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        Log.d("TAG", "login token: "+sharedPreferences.getString(TOKEN_KEY, null))
-        return sharedPreferences.getString(TOKEN_KEY, null) != null
+        val token = sharedPreferences.getString(TOKEN_KEY, null)
+
+        return token != null && !isTokenExpired(token)
     }
 
     fun logout(context: Context) {
@@ -129,6 +141,25 @@ class LoginViewModel : ViewModel() {
             apply()
         }
         Log.d("TAG", sharedPreferences.toString())
+    }
+
+
+    private fun saveLoginInfo(context: Context, token: String, expiresIn: Long?) {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putString(TOKEN_KEY, token)
+            if (rememberMe) {
+                putString(EMAIL_KEY, email)
+                putString(PASSWORD_KEY, password)
+            }
+            putBoolean(REMEMBER_ME_KEY, rememberMe)
+            expiresIn?.let {
+                putLong("expires_in", it)
+                putLong("token_time", System.currentTimeMillis()) // Lưu thời gian hiện tại
+            }
+            apply()
+        }
     }
 
 

@@ -47,6 +47,11 @@ import com.ph45308.assignment_ph45308.Cart.CartScreen
 import com.ph45308.assignment_ph45308.History.HistoryScreen
 import com.ph45308.assignment_ph45308.Home_n_Product.HomeScreen
 import com.ph45308.assignment_ph45308.Home_n_Product.ProductDetailScreen
+import com.ph45308.assignment_ph45308.Manager.ManagerCategoryScreen
+import com.ph45308.assignment_ph45308.Manager.ManagerProductScreen
+import com.ph45308.assignment_ph45308.Payment.PaymentScreen
+import com.ph45308.assignment_ph45308.Profile.EditAvatarScreen
+import com.ph45308.assignment_ph45308.Profile.EditProfileScreen
 import com.ph45308.assignment_ph45308.Profile.ProfileScreen
 import com.ph45308.assignment_ph45308.ui.theme.Assignment_PH45308Theme
 
@@ -74,6 +79,8 @@ fun MainApp() {
         "ProductDetailScreen/{productId}" -> false
         "LoginScreen" -> false
         "RegisterScreen" -> false
+        "PaymentScreen" -> false
+        "EditProfileScreen" -> false
         null -> false
         else -> true
     }
@@ -98,10 +105,15 @@ fun NavigationGraph(navigationController: NavHostController, modifier: Modifier 
     ) {
         composable(BottomBarScreens.Home.screen) { HomeScreen(navigationController) }
         composable(BottomBarScreens.History.screen) { HistoryScreen() }
-        composable(BottomBarScreens.Cart.screen) { CartScreen() }
-        composable(BottomBarScreens.Profile.screen) { ProfileScreen() }
+        composable(BottomBarScreens.Cart.screen) { CartScreen(navigationController) }
+        composable(BottomBarScreens.Profile.screen) { ProfileScreen(navigationController) }
         composable("RegisterScreen") { RegisterScreen(navigationController) }
         composable("LoginScreen") { LoginScreen(navigationController) }
+        composable("ManagerProductScreen") { ManagerProductScreen() }
+        composable("ManagerCategoryScreen") { ManagerCategoryScreen() }
+        composable("PaymentScreen") { PaymentScreen() }
+        composable("EditProfileScreen") { EditProfileScreen(navigationController) }
+        composable("EditAvatarScreen") { EditAvatarScreen() }
         composable(
             "ProductDetailScreen/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.StringType })
