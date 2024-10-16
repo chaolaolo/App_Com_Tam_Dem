@@ -47,8 +47,10 @@ import com.ph45308.assignment_ph45308.Cart.CartScreen
 import com.ph45308.assignment_ph45308.History.HistoryScreen
 import com.ph45308.assignment_ph45308.Home_n_Product.HomeScreen
 import com.ph45308.assignment_ph45308.Home_n_Product.ProductDetailScreen
-import com.ph45308.assignment_ph45308.Manager.ManagerCategoryScreen
-import com.ph45308.assignment_ph45308.Manager.ManagerProductScreen
+import com.ph45308.assignment_ph45308.Manage.AddProductScreen
+import com.ph45308.assignment_ph45308.Manage.EditProductScreen
+import com.ph45308.assignment_ph45308.Manage.ManagerCategoryScreen
+import com.ph45308.assignment_ph45308.Manage.ManagerProductScreen
 import com.ph45308.assignment_ph45308.Payment.PaymentScreen
 import com.ph45308.assignment_ph45308.Profile.EditAvatarScreen
 import com.ph45308.assignment_ph45308.Profile.EditProfileScreen
@@ -81,6 +83,8 @@ fun MainApp() {
         "RegisterScreen" -> false
         "PaymentScreen" -> false
         "EditProfileScreen" -> false
+        "ManagerProductScreen" -> false
+        "ManagerCategoryScreen" -> false
         null -> false
         else -> true
     }
@@ -109,11 +113,14 @@ fun NavigationGraph(navigationController: NavHostController, modifier: Modifier 
         composable(BottomBarScreens.Profile.screen) { ProfileScreen(navigationController) }
         composable("RegisterScreen") { RegisterScreen(navigationController) }
         composable("LoginScreen") { LoginScreen(navigationController) }
-        composable("ManagerProductScreen") { ManagerProductScreen() }
-        composable("ManagerCategoryScreen") { ManagerCategoryScreen() }
+        composable("ManagerProductScreen") { ManagerProductScreen(navigationController) }
+        composable("ManagerCategoryScreen") { ManagerCategoryScreen(navigationController) }
         composable("PaymentScreen") { PaymentScreen() }
         composable("EditProfileScreen") { EditProfileScreen(navigationController) }
         composable("EditAvatarScreen") { EditAvatarScreen() }
+        composable("ManagerProductScreen") { ManagerProductScreen(navigationController) }
+        composable("AddProductScreen") { AddProductScreen(navigationController) }
+//        composable("EditProductScreen") { EditProductScreen(navigationController) }
         composable(
             "ProductDetailScreen/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.StringType })
@@ -122,6 +129,16 @@ fun NavigationGraph(navigationController: NavHostController, modifier: Modifier 
             ProductDetailScreen(
             productId = productId ,
             navigationController = navigationController
+            )
+        }
+        composable(
+            "EditProductScreen/{productId}",
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            EditProductScreen(
+                productId = productId,
+                navigationController
             )
         }
     }

@@ -69,7 +69,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-    implementation ("com.auth0.android:jwtdecode:2.0.1")
+    implementation ("com.auth0.android:jwtdecode:2.0.2")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
 
     implementation("androidx.camera:camera-core:1.3.4")
@@ -77,4 +77,6 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.3.4")
     implementation("androidx.camera:camera-view:1.3.4")
     implementation("androidx.compose.ui:ui-tooling-preview:1.7.3")
+    implementation ("androidx.compose.ui:ui:1.7.3")
+    implementation ("androidx.activity:activity-compose:1.9.2")
 }

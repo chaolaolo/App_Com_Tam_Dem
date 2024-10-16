@@ -243,7 +243,7 @@ fun EmptyCart() {
 fun CartItem(
     cart: Cart,
     navController: NavController? = null,
-//    viewModel: ProductViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: ProductViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
 
     val context = LocalContext.current
@@ -293,7 +293,11 @@ fun CartItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    if (cart.quantity > 1) {
+                        viewModel.decreaseQuantity(cart)  // Gọi hàm giảm số lượng
+                    }
+                }) {
                     Image(painter = painterResource(id = R.drawable.icon_minus), contentDescription = "minus quantity")
                 }
                 Text(
@@ -301,7 +305,9 @@ fun CartItem(
                     fontSize = 14.sp,
                     color = Color.Black
                 )
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    viewModel.increaseQuantity(cart)  // Gọi hàm tăng số lượng
+                }) {
                     Image(imageVector = Icons.Filled.Add, contentDescription = "add more quantity")
                 }
             }

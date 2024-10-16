@@ -44,13 +44,18 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,6 +81,8 @@ import com.ph45308.assignment_ph45308.Model.Product
 import com.ph45308.assignment_ph45308.MyTopBar
 import com.ph45308.assignment_ph45308.R
 import com.ph45308.assignment_ph45308.ViewModel.ProductViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class Home : ComponentActivity() {
@@ -99,11 +106,20 @@ fun HomeScreen(navController: NavController, viewModel: ProductViewModel = viewM
     val scrollState = rememberScrollState()
     val filteredProductList by viewModel.filteredProductList
     var searchQuery by remember { mutableStateOf("") }
+    val categories = viewModel.categoryList.value
 
     val context = LocalContext.current
 //    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 //    val token = sharedPreferences.getString("token", "") ?: ""
     val token = viewModel.getTokenFromSharedPreferences(context) ?: ""
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchProducts()
+    }
+
     Scaffold(
         topBar = {
             MyTopBar(
@@ -123,7 +139,8 @@ fun HomeScreen(navController: NavController, viewModel: ProductViewModel = viewM
 //                    }
 //                }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {paddingValues ->
         Box(
             modifier = Modifier
@@ -145,20 +162,6 @@ fun HomeScreen(navController: NavController, viewModel: ProductViewModel = viewM
                 }
 
                 item {
-//                    Row(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .horizontalScroll(scrollState)
-//                            .padding(22.dp, 0.dp),
-//                        horizontalArrangement = Arrangement.spacedBy(34.dp)
-//                    ) {
-//                        listOf(
-//                            Tab("Món ăn", R.drawable.img_tab),
-//                            Tab("Đồ ăn thêm", R.drawable.img_tab),
-//                            Tab("Topping", R.drawable.img_tab),
-//                            Tab("Khác", R.drawable.img_tab)
-//                        )
-//                    }
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = { query ->
@@ -171,15 +174,17 @@ fun HomeScreen(navController: NavController, viewModel: ProductViewModel = viewM
                     )
                 }
                 item {
-                    ProductCategoryDropdown { selectedCategory ->
+                    ProductCategoryDropdown(categories = categories) { selectedCategory ->
                         // Handle category selection
-                        viewModel.filterProductsByCategory(selectedCategory.name)
-                        println("Selected category: ${selectedCategory.name}")
+                        selectedCategory?.let {
+                            viewModel.filterProductsByCategory(it.name)
+                            println("Selected category: ${it._id}")
+                        }
                     }
                 }
 
                 items(viewModel.filteredProductList.value) { product ->
-                    ProductItem(product, navController, token = token)
+                    ProductItem(product, navController, token = token, snackbarHostState = snackbarHostState)
                 }
 
             }
@@ -195,7 +200,9 @@ fun Banner() {
         contentDescription = "home banner",
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+//            .height(180.dp)
+            .background(Color.Red),
+        contentScale = ContentScale.Fit
     )
 }
 
@@ -234,10 +241,11 @@ fun ProductItem(
     navController: NavController,
     viewModel: ProductViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     token: String,
+    snackbarHostState: SnackbarHostState,
 ) {
 
     val context = LocalContext.current
-
+    val coroutineScope = rememberCoroutineScope()
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -258,8 +266,9 @@ fun ProductItem(
                     .crossfade(true)
                     .build(),
                 contentDescription = "Product image",
+                error = painterResource(id = R.drawable.img_empty),
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(80.dp)
                     .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop,
 
@@ -280,28 +289,25 @@ fun ProductItem(
                     color = Color.Gray
                 )
             }
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//            ) {
-//                IconButton(onClick = { /*TODO*/ }) {
-//                    Image(painter = painterResource(id = R.drawable.icon_minus), contentDescription = "minus quantity")
-//                }
-//                Text(
-//                    text = product.quantity.toString(),
-//                    fontSize = 14.sp,
-//                    color = Color.Black
-//                )
-//                IconButton(onClick = { /*TODO*/ }) {
-//                    Image(imageVector = Icons.Filled.Add, contentDescription = "add more quantity")
-//                }
-//            }
 
             IconButton(
                 onClick = {
                     if (token.isNotEmpty()) {
                         if (product._id != null) {
                             viewModel.addToCart(context, token, product._id, product.quantity ?: 1)
-                            Log.d("TAG", "ProductItem: " + product._id)
+                            coroutineScope.launch {
+                                // Hiển thị snackbar và tự động đóng sau 5 giây
+                                val result = snackbarHostState.showSnackbar(
+                                    message = "Added to Cart",
+                                    actionLabel = "OK"
+                                )
+                                when (result) {
+                                    SnackbarResult.Dismissed -> Log.d("TAG", "Snackbar dismissed")
+                                    SnackbarResult.ActionPerformed -> Log.d("TAG", "Snackbar action performed")
+                                }
+                                delay(3000)
+                                snackbarHostState.currentSnackbarData?.dismiss()  // Tự động đóng
+                            }
                         }else {
                             Log.d("TAG", "Product ID is null")
                         }

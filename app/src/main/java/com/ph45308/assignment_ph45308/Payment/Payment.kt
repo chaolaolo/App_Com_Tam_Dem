@@ -33,6 +33,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,6 +64,8 @@ import com.ph45308.assignment_ph45308.MyTopBar
 import com.ph45308.assignment_ph45308.Payment.ui.theme.Assignment_PH45308Theme
 import com.ph45308.assignment_ph45308.R
 import com.ph45308.assignment_ph45308.ViewModel.ProductViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class Payment : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,6 +104,9 @@ fun PaymentScreen(viewModel: ProductViewModel = androidx.lifecycle.viewmodel.com
     val totalQuantity = viewModel.cartItems.value.sumOf { it.quantity }
     val totalAmount = viewModel.cartItems.value.sumOf { it.quantity * it.product.price }
 
+    val scaffoldState = remember { androidx.compose.material3.SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
         viewModel.fetchCart(context)
     }
@@ -109,8 +116,28 @@ fun PaymentScreen(viewModel: ProductViewModel = androidx.lifecycle.viewmodel.com
             MyTopBar(title = "Thanh Toán")
         },
         bottomBar = {
-            BottomCart(totalQuantity, totalAmount, onPaymentClick = { showDialog = true })
-        }
+            BottomCart(totalQuantity, totalAmount,
+                onPaymentClick = {
+                    if (name.isEmpty() || phoneNumber.isEmpty() || fullAddress.isEmpty()) {
+                        scope.launch {
+                            val result = scaffoldState.showSnackbar(
+                                message = "hãy nhập thông tin và địa chỉ!",
+                                actionLabel = "Đóng"
+                            )
+                            delay(2000)
+                            scaffoldState.currentSnackbarData?.dismiss()
+                            when (result) {
+                                SnackbarResult.ActionPerformed -> Log.d("Snackbar", "Đã đóng Snackbar")
+                                SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar bị ẩn")
+                            }
+                        }
+                    } else {
+                        showDialog = true
+                    }
+                }
+            )
+        },
+        snackbarHost = { androidx.compose.material3.SnackbarHost(hostState = scaffoldState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -280,6 +307,18 @@ fun PaymentScreen(viewModel: ProductViewModel = androidx.lifecycle.viewmodel.com
                         Log.d("TAG", "PaymentScreen: " + order)
                         showDialog = false
                         // Xử lý tiếp code
+                        scope.launch {
+                            val result = scaffoldState.showSnackbar(
+                                message = "Thanh toán thành công!",
+                                actionLabel = "Đóng"
+                            )
+                            delay(5000)
+                            scaffoldState.currentSnackbarData?.dismiss()
+                            when (result) {
+                                SnackbarResult.ActionPerformed -> Log.d("Snackbar", "Đã đóng Snackbar")
+                                SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar bị ẩn")
+                            }
+                        }
                     }
                 )
             }
@@ -458,7 +497,12 @@ fun AddressDialog(
 }
 
 @Composable
-fun BottomCart(totalQuantity: Int, totalAmount: Double, onPaymentClick: () -> Unit,viewModel: ProductViewModel= androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun BottomCart(
+    totalQuantity: Int,
+    totalAmount: Double,
+    onPaymentClick: () -> Unit,
+    viewModel: ProductViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+) {
     //Thanh toán
     Card(
         modifier = Modifier

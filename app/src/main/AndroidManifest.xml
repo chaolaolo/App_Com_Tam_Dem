@@ -2,13 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
     <uses-permission android:name="android.permission.MANAGE_DEVICE_POLICY_CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -46,27 +44,27 @@
             android:label="@string/title_activity_profile"
             android:theme="@style/Theme.Assignment_PH45308" />
         <activity
-            android:name=".Manager.AddProduct"
+            android:name=".Manage.AddProduct"
             android:exported="false"
             android:label="@string/title_activity_add_product"
             android:theme="@style/Theme.Assignment_PH45308" />
         <activity
-            android:name=".Manager.ManageProduct"
+            android:name=".Manage.ManageProduct"
             android:exported="false"
             android:label="@string/title_activity_manage_product"
             android:theme="@style/Theme.Assignment_PH45308" />
         <activity
-            android:name=".Manager.AddCategory"
+            android:name=".Manage.AddCategory"
             android:exported="false"
             android:label="@string/title_activity_add_category"
             android:theme="@style/Theme.Assignment_PH45308" />
         <activity
-            android:name=".Manager.ManageCategory"
+            android:name=".Manage.ManageCategory"
             android:exported="false"
             android:label="@string/title_activity_manage_category"
             android:theme="@style/Theme.Assignment_PH45308" />
         <activity
-            android:name=".Manager.Manager"
+            android:name=".Manage.EditProduct"
             android:exported="false"
             android:label="@string/title_activity_manager"
             android:theme="@style/Theme.Assignment_PH45308" />

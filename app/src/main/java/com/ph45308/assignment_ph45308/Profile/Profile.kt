@@ -3,13 +3,11 @@ package com.ph45308.assignment_ph45308.Profile
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,20 +21,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -68,13 +59,9 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ph45308.assignment_ph45308.Account.Login
-import com.ph45308.assignment_ph45308.Manager.ManageCategory
-import com.ph45308.assignment_ph45308.Manager.ManageProduct
-import com.ph45308.assignment_ph45308.MyTopBar
 import com.ph45308.assignment_ph45308.Profile.ui.theme.Assignment_PH45308Theme
 import com.ph45308.assignment_ph45308.R
 import com.ph45308.assignment_ph45308.ViewModel.LoginViewModel
-import com.ph45308.assignment_ph45308.ViewModel.ProductViewModel
 import com.ph45308.assignment_ph45308.ViewModel.UserViewModel
 
 class Profile : ComponentActivity() {
@@ -171,14 +158,16 @@ fun ProfileScreen(
                     }
                     item {
                         ManageItem(title = "Quản lý món ăn") {
-                            val intent = Intent(context, ManageProduct::class.java)
-                            context.startActivity(intent)
+//                            val intent = Intent(context, ManageProduct::class.java)
+//                            context.startActivity(intent)
+                            navController.navigate("ManagerProductScreen")
                         }
                     }
                     item {
                         ManageItem(title = "Quản lý loại món ăn") {
-                            val intent = Intent(context, ManageCategory::class.java)
-                            context.startActivity(intent)
+//                            val intent = Intent(context, ManageCategory::class.java)
+//                            context.startActivity(intent)
+                            navController.navigate("ManagerCategoryScreen")
                         }
                     }
                 }

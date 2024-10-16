@@ -1,4 +1,4 @@
-package com.ph45308.assignment_ph45308.Manager.ui.theme
+package com.ph45308.assignment_ph45308.Manage.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

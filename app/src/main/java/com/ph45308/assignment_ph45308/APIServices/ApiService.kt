@@ -1,6 +1,7 @@
 package com.ph45308.assignment_ph45308.APIServices
 
 import com.ph45308.assignment_ph45308.Model.Cart
+import com.ph45308.assignment_ph45308.Model.Category
 import com.ph45308.assignment_ph45308.Model.LoginResponse
 import com.ph45308.assignment_ph45308.Model.Order
 import com.ph45308.assignment_ph45308.Model.Product
@@ -37,6 +38,21 @@ interface ApiService {
     // Search API
     @GET("products/search")
     suspend fun searchProducts(@Query("q") query: String): List<Product>
+
+    //    Category
+    //Get Cate
+    @GET("products/getCategory")
+    suspend fun getCategories(): List<Category>
+
+    //Add Cate
+    @POST("products/addCategory")
+    suspend fun addCategory(@Body category: Category): Category
+
+    @PUT("products/editCategory/{id}")
+    suspend fun editCategory(@Path("id") id: String, @Body category: Category): Category
+
+    @DELETE("products/deleteCategory/{id}")
+    suspend fun deleteCategory(@Path("id") id: String): Unit
 
     //Cart API
     @POST("products/addToCart")

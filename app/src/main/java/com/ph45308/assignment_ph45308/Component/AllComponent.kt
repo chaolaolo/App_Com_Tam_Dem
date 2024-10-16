@@ -151,21 +151,22 @@ fun PaymentOption(
 ///Spinner
 @Composable
 fun ProductCategoryDropdown(
+    categories: List<Category>,
     onCategorySelected: (Category) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
 
     // Sample product categories
-    val categories = remember {
-        listOf(
-            Category("1", "Điện thoại", "Smartphones và phụ kiện"),
-            Category("2", "Laptop", "Máy tính xách tay"),
-            Category("3", "Tablet", "Máy tính bảng"),
-            Category("4", "aa", "Các loại phụ kiện điện tử"),
-            Category("5", "bb", "Smartwatch")
-        )
-    }
+//    val categories = remember {
+//        listOf(
+//            Category("1", "Điện thoại"),
+//            Category("2", "Laptop"),
+//            Category("3", "Tablet"),
+//            Category("4", "aa"),
+//            Category("5", "bb")
+//        )
+//    }
 
     Column(
         modifier = Modifier
@@ -224,7 +225,9 @@ fun ProductCategoryDropdown(
                         onClick = {
                             selectedCategory = category
                             expanded = false
-                            onCategorySelected(category)
+                            selectedCategory?.let { selected ->
+                                onCategorySelected(selected)
+                            }
                         }
                     )
                     if (category != categories.last()) {

@@ -8,13 +8,12 @@ data class Product(
     var price: Double,
     val description: String,
     var quantity: Int,
-    var category: String,
+    var category: Category,
 )
 
 data class Category(
-    val id: String,
+    val _id: String,
     val name: String,
-    val description: String = ""
 )
 
 data class User(

@@ -199,7 +199,7 @@ fun ProductDetailScreen(
                             .padding(10.dp)
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
-                        Text(text = product?.category ?: "Category")
+                        Text(text = product?.category?.name ?: "Category")
                         Row(
                             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween
                         ) {
