@@ -61,7 +61,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ph45308.assignment_ph45308.Account.ui.theme.Assignment_PH45308Theme
+import com.ph45308.assignment_ph45308.Screens.Account.ui.theme.Assignment_PH45308Theme
 import com.ph45308.assignment_ph45308.Model.Category
 import com.ph45308.assignment_ph45308.R
 

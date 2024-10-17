@@ -41,20 +41,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.ph45308.assignment_ph45308.Account.LoginScreen
-import com.ph45308.assignment_ph45308.Account.RegisterScreen
-import com.ph45308.assignment_ph45308.Cart.CartScreen
-import com.ph45308.assignment_ph45308.History.HistoryScreen
-import com.ph45308.assignment_ph45308.Home_n_Product.HomeScreen
-import com.ph45308.assignment_ph45308.Home_n_Product.ProductDetailScreen
-import com.ph45308.assignment_ph45308.Manage.AddProductScreen
-import com.ph45308.assignment_ph45308.Manage.EditProductScreen
-import com.ph45308.assignment_ph45308.Manage.ManagerCategoryScreen
-import com.ph45308.assignment_ph45308.Manage.ManagerProductScreen
-import com.ph45308.assignment_ph45308.Payment.PaymentScreen
-import com.ph45308.assignment_ph45308.Profile.EditAvatarScreen
-import com.ph45308.assignment_ph45308.Profile.EditProfileScreen
-import com.ph45308.assignment_ph45308.Profile.ProfileScreen
+import com.ph45308.assignment_ph45308.Screens.Account.LoginScreen
+import com.ph45308.assignment_ph45308.Screens.Account.RegisterScreen
+import com.ph45308.assignment_ph45308.Screens.Cart.CartScreen
+import com.ph45308.assignment_ph45308.Screens.History.HistoryScreen
+import com.ph45308.assignment_ph45308.Screens.Home_n_Product.HomeScreen
+import com.ph45308.assignment_ph45308.Screens.Home_n_Product.ProductDetailScreen
+import com.ph45308.assignment_ph45308.Screens.Manage.AddProductScreen
+import com.ph45308.assignment_ph45308.Screens.Manage.EditProductScreen
+import com.ph45308.assignment_ph45308.Screens.Manage.ManagerCategoryScreen
+import com.ph45308.assignment_ph45308.Screens.Manage.ManagerProductScreen
+import com.ph45308.assignment_ph45308.Screens.Payment.PaymentScreen
+import com.ph45308.assignment_ph45308.Screens.Profile.EditAvatarScreen
+import com.ph45308.assignment_ph45308.Screens.Profile.EditProfileScreen
+import com.ph45308.assignment_ph45308.Screens.Profile.ProfileScreen
 import com.ph45308.assignment_ph45308.ui.theme.Assignment_PH45308Theme
 
 class MainActivity : ComponentActivity() {

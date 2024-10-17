@@ -229,7 +229,7 @@ class ProductViewModel: ViewModel() {
     //addToCart
     fun addToCart(context: Context, token: String, productId: String, quantity: Int) {
 //        val url = "http://192.168.1.13:3000/products/addToCart"
-        val url = "http://172.20.10.8:3000/products/addToCart"
+        val url = "http://10.24.55.42:3000/products/addToCart"
         val jsonObject = JSONObject().apply {
             put("productId", productId)
             put("quantity", quantity)
