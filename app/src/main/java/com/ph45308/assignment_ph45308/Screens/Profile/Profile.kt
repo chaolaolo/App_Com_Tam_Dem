@@ -86,6 +86,7 @@ fun ProfileScreen(
 
     val context = LocalContext.current
     val userInfo by userViewModel.userInfoState.collectAsState()
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         userViewModel.getUserInfo(context)
@@ -139,9 +140,7 @@ fun ProfileScreen(
                         }
                     }
                     TextButton(onClick = {
-                        viewModel.logout(context)
-                        val intent = Intent(context, Login::class.java)
-                        context.startActivity(intent)
+                        showLogoutDialog = true
                     }) {
                         Text(text = "Sign Out", color = Color(0xFF3A84DA))
                     }
@@ -173,6 +172,30 @@ fun ProfileScreen(
                 }
             }
         }
+///
+    if (showLogoutDialog) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text(text = "Xác nhận đăng xuất") },
+            text = { Text(text = "Bạn có chắc chắn muốn đăng xuất?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showLogoutDialog = false
+                    viewModel.logout(context)
+                    val intent = Intent(context, Login::class.java)
+                    context.startActivity(intent)
+                }) {
+                    Text(text = "Đăng xuất", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) {
+                    Text(text = "Hủy", color = Color.Gray)
+                }
+            }
+        )
+    }
+
 }
 
 
@@ -296,6 +319,8 @@ fun ProfileTextField(label: String, value: TextFieldValue, onValueChange: (TextF
         )
     }
 }
+
+
 
 
 @Preview(showSystemUi = true)

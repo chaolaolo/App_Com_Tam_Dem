@@ -92,9 +92,11 @@ class Home : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Assignment_PH45308Theme {
-
-                PreviewHome()
-
+                Scaffold {paddingvl->
+                    Box(modifier = Modifier.padding(paddingvl)){
+                        HomeScreen(navController = rememberNavController())
+                    }
+                }
             }
         }
     }

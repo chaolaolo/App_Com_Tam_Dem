@@ -1,6 +1,8 @@
 package com.ph45308.assignment_ph45308.Screens.Cart
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -57,6 +59,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -66,6 +69,7 @@ import com.ph45308.assignment_ph45308.Model.Cart
 import com.ph45308.assignment_ph45308.Model.Product
 import com.ph45308.assignment_ph45308.MyTopBar
 import com.ph45308.assignment_ph45308.R
+import com.ph45308.assignment_ph45308.Screens.Home_n_Product.Home
 import com.ph45308.assignment_ph45308.ViewModel.ProductViewModel
 
 class CartActi : ComponentActivity() {
@@ -197,6 +201,8 @@ fun CartScreen(navController: NavController, viewModel: ProductViewModel = andro
 
 @Composable
 fun EmptyCart() {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -220,7 +226,10 @@ fun EmptyCart() {
         )
         Spacer(modifier = Modifier.height(40.dp))
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                val intent = Intent(context, Home::class.java)
+                context.startActivity(intent)
+            },
             modifier = Modifier
                 .width(200.dp)
                 .height(50.dp)

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -101,8 +102,20 @@ fun HistoryScreen(viewModel: ProductViewModel = androidx.lifecycle.viewmodel.com
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                if (orders.isNotEmpty()) {
                 items(orders) { order ->
                     OrderItem(order)
+                }
+                }else{
+                  item{
+                      Column (
+                          modifier = Modifier.fillMaxSize(),
+                          verticalArrangement = Arrangement.Center,
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                      ){
+                          Text(text = "History is empty, please buy something!")
+                      }
+                  }
                 }
             }
         }
