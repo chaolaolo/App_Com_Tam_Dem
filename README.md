@@ -1,117 +1,140 @@
-# App Com Tam Dem
+# Ứng dụng Đặt Cơm Tấm
 
-Ứng dụng "Com Tam Dem" là một dự án sử dụng Node.js, MongoDB và RESTful APIs, giúp người dùng quản lý và đặt món ăn cơm tấm. Backend sử dụng Node.js với Express và kết nối tới MongoDB để lưu trữ dữ liệu.
+## Ảnh chụp giao diện ứng dụng
+<table>
+  <tr>
+    <td>Đăng nhập</td>
+    <td>Trang chủ</td>
+    <td>Chọn danh mục</td>
+  </tr>
+  <tr>
+    <td><img src="ScreenShot/Screenshot_1744265483.png" width="190"></td>
+    <td><img src="ScreenShot/Screenshot_1744266050.png" width="190"></td>
+    <td><img src="ScreenShot/Screenshot_1744266063.png" width="190"></td>
+  </tr>
+  <tr>
+    <td colspan="3"></td>
+  </tr>
+  <tr>
+    <td>Kết quả lọc theo danh mục</td>
+    <td>Giỏ hàng</td>
+    <td>Thanh toán</td>
+  </tr>
+    <tr>
+    <td><img src="ScreenShot/Screenshot_1744266073.png" width="190"></td>
+    <td><img src="ScreenShot/Screenshot_1744266102.png" width="190"></td>
+    <td><img src="ScreenShot/Screenshot_1744266220.png" width="190"></td>
+  </tr>
+  <tr>
+    <td colspan="3"></td>
+  </tr>
+  <tr>
+    <td>Xác nhận thanh toán</td>
+    <td>Trạng thái đơn hàng</td>
+    <td>Quản lý sản phẩm(Người bán)</td>
+  </tr>
+    <tr>
+    <td><img src="ScreenShot/Screenshot_1744266225.png" width="190"></td>
+    <td><img src="ScreenShot/Screenshot_1744266245.png" width="190"></td>
+    <td><img src="ScreenShot/Screenshot_1744266331.png" width="190"></td>
+  </tr>
+  <tr>
+    <td colspan="3"></td>
+  </tr>
+  <tr>
+    <td>Quản lý sản phẩm(Người bán)</td>
+    <td>Quản lý danh mục</td>
+    <td>Quản lý Danh mục</td>
+  </tr>
+    <tr>
+    <td><img src="ScreenShot/Screenshot_1744266341.png" width="190"></td>
+    <td><img src="ScreenShot/Screenshot_1744266350.png" width="190"></td>
+    <td><img src="ScreenShot/Screenshot_1744266367.png" width="190"></td>
+  </tr>
+  <tr>
+    <td colspan="3"></td>
+  </tr>
+  <tr>
+    <td>Chỉnh sửa thông tin cá nhân</td>
+  </tr>
+    <tr>
+    <td><img src="ScreenShot/Screenshot_1744266374.png" width="190"></td>
+  </tr>
+  
+</table>
 
-## Mô Tả
+Ứng dụng đặt món và quản lý nhà hàng Cơm Tấm được xây dựng với:
+- **Frontend**: Android sử dụng Kotlin Compose (Jetpack Compose)
+- **Backend**: Node.js
+- **Database**: MongoDB
 
-Ứng dụng cung cấp các tính năng như:
-- Quản lý danh sách món ăn.
-- Tạo, đọc, cập nhật, và xóa món ăn.
-- Hệ thống API RESTful giúp giao tiếp giữa client và server.
+## Tính năng chính
 
-## Công Nghệ Sử Dụng
+### Cho khách hàng
+- Đăng nhập/đăng ký tài khoản
+- Duyệt menu món ăn với hình ảnh và mô tả
+- Đặt món và thanh toán trực tuyến
+- Theo dõi trạng thái đơn hàng
 
-- **Node.js**: Chạy trên môi trường JavaScript để xây dựng backend.
-- **Express**: Framework của Node.js để xây dựng các API.
-- **MongoDB**: Cơ sở dữ liệu NoSQL để lưu trữ dữ liệu món ăn.
-- **Mongoose**: Thư viện dùng để kết nối và tương tác với MongoDB.
-- **RESTful API**: Các endpoint RESTful để xử lý các yêu cầu HTTP.
+### Cho quản lý nhà hàng
+- Quản lý menu (thêm/xóa/sửa món)
+- Theo dõi và cập nhật trạng thái đơn hàng
+- Thống kê doanh thu
 
-## Cài Đặt
+## Công nghệ sử dụng
 
-1. **Clone Repository**:
+**Frontend (Android)**:
+- Kotlin
+- Jetpack Compose (UI)
+- Retrofit (API calls)
+- ViewModel & LiveData
+- Coil (Image loading)
 
-```bash
-git clone https://github.com/chaolaolo/App_Com_Tam_Dem.git
-```
+**Backend**:
+- Node.js
+- Express.js
+- MongoDB (với Mongoose)
+- JWT Authentication
 
-2. **Cài đặt các phụ thuộc**:
+## Cài đặt và chạy dự án
 
-Điều hướng đến thư mục dự án và cài đặt các gói phụ thuộc cần thiết:
+### Yêu cầu hệ thống
+- Android Studio (cho frontend)
+- Node.js 16+ (cho backend)
+- MongoDB 4.4+
 
-```bash
-cd App_Com_Tam_Dem
-npm install
-```
+### Backend
+1. Clone repository
+2. Vào thư mục `backend`:
+   ```bash
+   cd backend
+   npm install
+3. Tạo file `.env` dựa trên `.env.example`
+4. Chạy server:
+   ```bash
+   npm start
+   ```
 
-3. **Cấu Hình MongoDB**:
+### Frontend (Android)
+1. Mở project bằng Android Studio
+2. Cập nhật base API URL trong file `NetworkModule.kt`
+3. Chạy trên máy ảo hoặc thiết bị thật
 
-Cập nhật thông tin kết nối MongoDB trong file `.env` hoặc `config/db.js`:
-
-```bash
-MONGO_URI=mongodb+srv://<username>:<password>@cluster0.ng1qeww.mongodb.net/ComTamDem
-```
-
-4. **Chạy Dự Án**:
-
-Chạy server bằng lệnh sau:
-
-```bash
-npm start
-```
-
-Server sẽ chạy tại `http://localhost:5000` (hoặc cổng khác nếu được cấu hình).
-
-## Các API Endpoints
-
-### 1. **GET /api/monan** - Lấy danh sách tất cả món ăn
-
-- **Response**: Danh sách món ăn dưới dạng JSON.
-
-### 2. **POST /api/monan** - Thêm món ăn mới
-
-- **Body**:
-```json
-{
-  "ten": "Cơm Tấm Sườn",
-  "gia": 35000,
-  "mo_ta": "Cơm tấm sườn nướng, trứng ốp la"
-}
-```
-
-- **Response**: Thông tin món ăn đã được tạo.
-
-### 3. **GET /api/monan/:id** - Lấy thông tin chi tiết của món ăn
-
-- **Parameters**: `id` là ID của món ăn.
-- **Response**: Thông tin chi tiết món ăn.
-
-### 4. **PUT /api/monan/:id** - Cập nhật thông tin món ăn
-
-- **Parameters**: `id` là ID của món ăn.
-- **Body**:
-```json
-{
-  "ten": "Cơm Tấm Nướng",
-  "gia": 40000,
-  "mo_ta": "Cơm tấm nướng, thêm rau"
-}
-```
-
-- **Response**: Thông tin món ăn đã được cập nhật.
-
-### 5. **DELETE /api/monan/:id** - Xóa món ăn
-
-- **Parameters**: `id` là ID của món ăn.
-- **Response**: Thông báo xóa món ăn thành công.
-
-## Cấu Trúc Thư Mục
-
+## Cấu trúc thư mục
 ```
 App_Com_Tam_Dem/
+├── android-app/          # Frontend Kotlin Compose
+│   ├── app/              # Main application module
+│   └── build.gradle      # Project configuration
 │
-├── config/              # Cấu hình kết nối MongoDB
-├── controllers/         # Logic xử lý API
-├── models/              # Các mô hình dữ liệu
-├── routes/              # Các route API
-├── .env                 # Cấu hình môi trường
-├── server.js            # Tập tin chính khởi động server
-└── package.json         # Thông tin và phụ thuộc của dự án
+└── backend/              # Node.js server
+    ├── controllers/      # Business logic
+    ├── models/          # MongoDB models
+    ├── routes/          # API endpoints
+    ├── app.js           # Main server file
+    └── package.json     # Dependencies
 ```
 
-## Ghi Chú
-
-- Đảm bảo rằng MongoDB đã được cài đặt và cấu hình đúng trước khi chạy ứng dụng.
-- Các API yêu cầu POST, PUT và DELETE sẽ cần dữ liệu được gửi qua body của yêu cầu HTTP.
-
----
+## Liên hệ
+- Tác giả: Chảo Láo Lở
+- Nếu bạn có bất kỳ câu hỏi nào về dự án, vui lòng liên hệ với tôi qua email: [chaolaolo290604@gmail.com](mailto:chaolaolo@example.com).
