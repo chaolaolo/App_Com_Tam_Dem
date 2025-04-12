@@ -137,4 +137,4 @@ App_Com_Tam_Dem/
 
 ## Liên hệ
 - Tác giả: Chảo Láo Lở
-- Nếu bạn có bất kỳ câu hỏi nào về dự án, vui lòng liên hệ với tôi qua email: [chaolaolo290604@gmail.com](mailto:chaolaolo@example.com).
+- Nếu bạn có bất kỳ câu hỏi nào về dự án, vui lòng liên hệ với tôi qua email: [chaolaolo290604@gmail.com](mailto:chaolaolo290604@gmail.com).
